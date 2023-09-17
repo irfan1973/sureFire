@@ -1,0 +1,67 @@
+import { Component, OnInit } from '@angular/core';
+import { EmailService } from '../services/email.service';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css'],
+})
+export class HomeComponent implements OnInit {
+  username: string = '';
+  phone: string = '';
+  company: string = '';
+  email: string = '';
+  zip: string = '';
+  help: string = '';
+
+  profileForm: FormGroup;
+  submitted = false;
+
+  constructor(
+    private builder: FormBuilder,
+    private _emailservice: EmailService
+  ) {
+    this.profileForm = new FormGroup([]);
+  }
+
+  ngOnInit(): void {}
+
+  public get f() {
+    return this.profileForm.controls;
+  }
+
+  onSubmit() {
+    let emailParams: any = {};
+
+    // from: req.body.from, //"contact@rockyroadsolutions.com",
+    // to: req.body.to,
+    // subject: req.body.subject,
+    // text: req.body.message,
+
+    emailParams.from = this.email;
+    emailParams.to = 'irfan.gill@gmail.com';
+    emailParams.cc = 'faheem.ullah@gmail.com';
+    emailParams.subject = this.help + ' quote required';
+    emailParams.message =
+      'Hi, The user/client with email : ' +
+      this.email +
+      ' has contacted Sure-Fire for quote regarding ' +
+      this.help +
+      '. We can reach him/them on Ph:' +
+      this.phone +
+      'Kind Regards ';
+
+    this._emailservice.email(emailParams).subscribe((res) => {
+      console.log(res);
+      alert(
+        'Request Submitted Successful. We will contact you shortly. Thaanks'
+      );
+    });
+  }
+}
